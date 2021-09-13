@@ -1,11 +1,14 @@
 package domain
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Messager interface {
-	GetLastUpdated() time.Time
+	fmt.Stringer
+
+	GetSent() time.Time
 	GetAuthor() string
 	GetMessage() string
-	GetIsEdited() bool
-	Edit(string)
 }

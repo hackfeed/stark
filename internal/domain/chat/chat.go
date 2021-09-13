@@ -4,15 +4,13 @@ import "github.com/hackfeed/stark/internal/domain"
 
 type chat struct {
 	Name     string
-	Users    map[string]domain.User
-	Messages []domain.Messager
+	Messages <-chan string
 }
 
 func New(name string) domain.Chatter {
 	return &chat{
 		Name:     name,
-		Users:    make(map[string]domain.User),
-		Messages: make([]domain.Messager, 0),
+		Messages: make(<-chan string),
 	}
 }
 
@@ -20,18 +18,10 @@ func (c *chat) GetName() string {
 	return c.Name
 }
 
-func (c *chat) GetUsers() map[string]domain.User {
-	return c.Users
-}
-
-func (c *chat) GetMessages() []domain.Messager {
+func (c *chat) GetMessages() <-chan string {
 	return c.Messages
 }
 
-func (c *chat) AddUser(user domain.User) {
-	c.GetUsers()[user.GetName()] = user
-}
-
-func (c *chat) RemoveUser(name string) {
-	delete(c.GetUsers(), name)
+func (c *chat) SetMessages(messages <-chan string) {
+	c.Messages = messages
 }

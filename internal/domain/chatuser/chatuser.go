@@ -2,9 +2,11 @@ package chatuser
 
 import "github.com/hackfeed/stark/internal/domain"
 
+type ChatUsers map[string]*chatUser
+
 type chatUser struct {
-	Name  string
-	Chats map[string]domain.Chatter
+	Name  string                    `json:"name"`
+	Chats map[string]domain.Chatter `json:"chats"`
 }
 
 func New(name string) domain.User {
