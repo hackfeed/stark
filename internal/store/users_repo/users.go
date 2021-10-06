@@ -1,4 +1,4 @@
-package store
+package usersrepo
 
 type UsersRepository interface {
 	GetUsers(string) (map[string]struct{}, error)

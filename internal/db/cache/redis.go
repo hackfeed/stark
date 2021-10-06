@@ -1,4 +1,4 @@
-package redis
+package cache
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	extredis "github.com/go-redis/redis/v8"
+	"github.com/go-redis/redis/v8"
 )
 
 var (
@@ -15,7 +15,7 @@ var (
 )
 
 type RedisClient struct {
-	client *extredis.Client
+	client *redis.Client
 }
 
 type Options struct {
@@ -42,13 +42,13 @@ func NewRedisClient(ctx context.Context, options *Options) (*RedisClient, error)
 	return redisClient, nil
 }
 
-func getRedisClient(ctx context.Context, options *Options) (*extredis.Client, error) {
-	opts := extredis.Options{
+func getRedisClient(ctx context.Context, options *Options) (*redis.Client, error) {
+	opts := redis.Options{
 		Addr:     options.Addr,
 		Password: options.Password,
 		DB:       options.DB,
 	}
-	client := extredis.NewClient(&opts)
+	client := redis.NewClient(&opts)
 
 	if err := client.Ping(ctx).Err(); err != nil {
 		return nil, fmt.Errorf("redis client with ttl %s failed to ping address %s, error is: %s",
@@ -73,7 +73,7 @@ func (rc *RedisClient) Publish(ctx context.Context, channel string, message inte
 func (rc *RedisClient) Subscribe(ctx context.Context, channel string) <-chan string {
 	redisChan := rc.client.Subscribe(ctx, channel).Channel()
 	messagesChan := make(chan string)
-	go func(ch <-chan *extredis.Message) {
+	go func(ch <-chan *redis.Message) {
 		for msg := range ch {
 			messagesChan <- msg.Payload
 		}

@@ -7,22 +7,18 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hackfeed/stark/internal/cache/redis"
+	"github.com/hackfeed/stark/internal/db/cache"
 	"github.com/hackfeed/stark/internal/domain"
-	"github.com/hackfeed/stark/internal/domain/chat"
-	"github.com/hackfeed/stark/internal/domain/chatmessage"
-	"github.com/hackfeed/stark/internal/domain/chatuser"
-	"github.com/hackfeed/stark/internal/store"
-	"github.com/hackfeed/stark/internal/store/chatusersrepo"
+	usersrepo "github.com/hackfeed/stark/internal/store/users_repo"
 	"github.com/jroimartin/gocui"
 )
 
 var (
-	redisClient *redis.RedisClient
-	usersRepo   store.UsersRepository
+	cacheClient *cache.RedisClient
+	usersRepo   usersrepo.UsersRepository
 	ctx         context.Context
-	activeChat  domain.Chatter
-	user        domain.User
+	activeChat  *domain.Chat
+	user        *domain.User
 )
 
 func init() {
@@ -30,7 +26,7 @@ func init() {
 
 	ctx = context.Background()
 
-	redisClient, err = redis.NewRedisClient(ctx, &redis.Options{
+	cacheClient, err = cache.NewRedisClient(ctx, &cache.Options{
 		Addr:     "localhost:6379",
 		Password: "",
 		DB:       0,
@@ -39,9 +35,9 @@ func init() {
 		log.Fatalln(err)
 	}
 
-	usersRepo = chatusersrepo.NewRedisRepo(redisClient, 1*time.Hour)
+	usersRepo = usersrepo.NewRedisRepo(*cacheClient, 1*time.Hour)
 
-	activeChat = chat.New("global")
+	activeChat = domain.NewChat("global")
 }
 
 func Disconnect(g *gocui.Gui, v *gocui.View) error {
@@ -54,16 +50,16 @@ func Disconnect(g *gocui.Gui, v *gocui.View) error {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	redisClient.Publish(ctx, activeChat.GetName(), "/users>")
-	redisClient.Publish(ctx, activeChat.GetName(), fmt.Sprintf("%s just disconnected :(", user.GetName()))
+	cacheClient.Publish(ctx, activeChat.GetName(), "/users>")
+	cacheClient.Publish(ctx, activeChat.GetName(), fmt.Sprintf("%s just disconnected :(", user.GetName()))
 
 	return gocui.ErrQuit
 }
 
 func Send(g *gocui.Gui, v *gocui.View) error {
-	message := chatmessage.New(user.GetName(), strings.TrimSpace(v.Buffer()))
+	message := domain.NewMessage(user.GetName(), strings.TrimSpace(v.Buffer()))
 
-	redisClient.Publish(ctx, activeChat.GetName(), message.String())
+	cacheClient.Publish(ctx, activeChat.GetName(), message.String())
 
 	g.Update(func(g *gocui.Gui) error {
 		v.Clear()
@@ -76,9 +72,9 @@ func Send(g *gocui.Gui, v *gocui.View) error {
 }
 
 func Connect(g *gocui.Gui, v *gocui.View) error {
-	user = chatuser.New(strings.TrimSpace(v.Buffer()))
-	user.AddChat(activeChat)
-	activeChat.SetMessages(redisClient.Subscribe(ctx, activeChat.GetName()))
+	user = domain.NewUser(strings.TrimSpace(v.Buffer()))
+	user.AddChat(*activeChat)
+	activeChat.SetMessages(cacheClient.Subscribe(ctx, activeChat.GetName()))
 
 	users, err := usersRepo.GetUsers(activeChat.GetName())
 	if err != nil {
@@ -93,8 +89,8 @@ func Connect(g *gocui.Gui, v *gocui.View) error {
 		log.Fatalln(err)
 	}
 
-	redisClient.Publish(ctx, activeChat.GetName(), "/users>")
-	redisClient.Publish(ctx, activeChat.GetName(), fmt.Sprintf("%s just joined!", user.GetName()))
+	cacheClient.Publish(ctx, activeChat.GetName(), "/users>")
+	cacheClient.Publish(ctx, activeChat.GetName(), fmt.Sprintf("%s just joined!", user.GetName()))
 
 	g.SetViewOnTop("messages")
 	g.SetViewOnTop("users")
@@ -125,9 +121,9 @@ func Connect(g *gocui.Gui, v *gocui.View) error {
 				})
 			case strings.Contains(msg, "/join"):
 				newChatName := strings.TrimSpace(strings.SplitAfter(msg, "/join")[1])
-				activeChat = chat.New(newChatName)
-				activeChat.SetMessages(redisClient.Subscribe(ctx, activeChat.GetName()))
-				user.AddChat(activeChat)
+				activeChat = domain.NewChat(newChatName)
+				activeChat.SetMessages(cacheClient.Subscribe(ctx, activeChat.GetName()))
+				user.AddChat(*activeChat)
 
 				users, err := usersRepo.GetUsers(activeChat.GetName())
 				if err != nil {
@@ -148,8 +144,8 @@ func Connect(g *gocui.Gui, v *gocui.View) error {
 					chatUsers += user + "\n"
 				}
 
-				redisClient.Publish(ctx, activeChat.GetName(), "/users>")
-				redisClient.Publish(ctx, activeChat.GetName(), fmt.Sprintf("%s just joined!", user.GetName()))
+				cacheClient.Publish(ctx, activeChat.GetName(), "/users>")
+				cacheClient.Publish(ctx, activeChat.GetName(), fmt.Sprintf("%s just joined!", user.GetName()))
 
 				g.Update(func(g *gocui.Gui) error {
 					usersView.Title = fmt.Sprintf("%d users:", chatUsersCount)
