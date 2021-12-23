@@ -16,3 +16,6 @@
 
 # Goland files
 .idea
+
+# Environment variables
+.env

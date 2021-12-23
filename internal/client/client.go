@@ -12,6 +12,7 @@ import (
 	"github.com/hackfeed/stark/internal/domain"
 	"github.com/hackfeed/stark/internal/store/filesrepo"
 	"github.com/hackfeed/stark/internal/store/usersrepo"
+	"github.com/joho/godotenv"
 	"github.com/jroimartin/gocui"
 	"github.com/logrusorgru/aurora/v3"
 )
@@ -26,16 +27,22 @@ var (
 )
 
 func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	ctx = context.Background()
 	cc, err := cache.NewRedisClient(ctx, &cache.Options{
-		Addr:     "localhost:6379",
-		Password: "",
+		Addr:     os.Getenv("REDIS_HOST"),
+		Password: os.Getenv("REDIS_PASS"),
 		DB:       0,
 	})
 	if err != nil {
 		log.Fatalln(err)
 	}
 	cacheClient = cc
+
 	usersRepo = usersrepo.NewRedisRepo(*cacheClient, 1*time.Hour)
 	filesRepo = filesrepo.NewRedisRepo(*cacheClient, 1*time.Hour)
 }
