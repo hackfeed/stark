@@ -48,12 +48,14 @@ func init() {
 }
 
 func Disconnect(_ *gocui.Gui, _ *gocui.View) error {
-	for _, chat := range user.GetChats() {
-		_, err := removeChatUser(user, chat, usersRepo)
-		if err != nil {
-			log.Fatalln(err)
+	if user != nil {
+		for _, chat := range user.GetChats() {
+			_, err := removeChatUser(user, chat, usersRepo)
+			if err != nil {
+				log.Fatalln(err)
+			}
+			handleLeave(ctx, cacheClient, chat, user, "disconnected")
 		}
-		handleLeave(ctx, cacheClient, chat, user, "disconnected")
 	}
 
 	return gocui.ErrQuit
