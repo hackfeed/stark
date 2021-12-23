@@ -6,7 +6,7 @@ func Layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
 	g.Cursor = true
 
-	if messages, err := g.SetView("messages", 0, 0, maxX-20, maxY-5); err != nil {
+	if messages, err := g.SetView("messages", 20, 0, maxX-20, maxY-5); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
@@ -15,7 +15,7 @@ func Layout(g *gocui.Gui) error {
 		messages.Wrap = true
 	}
 
-	if input, err := g.SetView("input", 0, maxY-5, maxX-20, maxY-1); err != nil {
+	if input, err := g.SetView("input", 20, maxY-5, maxX-20, maxY-1); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
@@ -32,6 +32,15 @@ func Layout(g *gocui.Gui) error {
 		users.Title = "Channel users"
 		users.Autoscroll = false
 		users.Wrap = true
+	}
+
+	if chats, err := g.SetView("chats", 0, 0, 20, maxY-1); err != nil {
+		if err != gocui.ErrUnknownView {
+			return err
+		}
+		chats.Title = "User chats"
+		chats.Autoscroll = false
+		chats.Wrap = true
 	}
 
 	if name, err := g.SetView("name", maxX/2-10, maxY/2-1, maxX/2+10, maxY/2+1); err != nil {
