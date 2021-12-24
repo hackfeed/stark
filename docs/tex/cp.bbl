@@ -1,0 +1,107 @@
+\begin{thebibliography}{10}
+\def\selectlanguageifdefined#1{
+\expandafter\ifx\csname date#1\endcsname\relax
+\else\language\csname l@#1\endcsname\fi}
+\ifx\undefined\url\def\url#1{{\small #1}}\else\fi
+\ifx\undefined\BibUrl\def\BibUrl#1{\url{#1}}\else\fi
+\ifx\undefined\BibAnnote\long\def\BibAnnote#1{(#1)}\else\fi
+\ifx\undefined\BibEmph\def\BibEmph#1{\emph{#1}}\else\fi
+
+\bibitem{im}
+\selectlanguageifdefined{russian}
+instant messaging | communication | Britannica [Электронный
+  ресурс].
+\newblock Режим доступа:
+  \url{https://www.britannica.com/topic/instant-messaging} (дата
+  обращения: 24.12.2021).
+
+\bibitem{ddp}
+\selectlanguageifdefined{russian}
+meteor/DDP.md at devel · meteor/meteor [Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://github.com/meteor/meteor/blob/devel/packages/ddp/DDP.md}
+  (дата обращения: 24.12.2021).
+
+\bibitem{pubsub}
+\selectlanguageifdefined{russian}
+Шаблон издателя и подписчика - Azure Architecture
+  Center | Microsoft Docs [Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://docs.microsoft.com/ru-ru/azure/architecture/patterns/publisher-subscriber}
+  (дата обращения: 24.12.2021).
+
+\bibitem{irc}
+\selectlanguageifdefined{russian}
+What is IRC (Internet Relay Chat)? [Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://mason.gmu.edu/~montecin/IRC.html} (дата обращения:
+  24.12.2021).
+
+\bibitem{matrix}
+\selectlanguageifdefined{russian}
+Matrix.org [Электронный ресурс].
+\newblock Режим доступа: \url{https://matrix.org} (дата
+  обращения: 24.12.2021).
+
+\bibitem{xmpp}
+\selectlanguageifdefined{russian}
+XMPP | The universal messaging standard [Электронный ресурс].
+\newblock Режим доступа: \url{https://xmpp.org} (дата
+  обращения: 24.12.2021).
+
+\bibitem{clichat}
+\selectlanguageifdefined{russian}
+ehrenjn/cli-chat: A basic command line chat program for linux and windows
+  written in python [Электронный ресурс].
+\newblock Режим доступа: \url{https://github.com/ehrenjn/cli-chat}
+  (дата обращения: 24.12.2021).
+
+\bibitem{goclichat}
+\selectlanguageifdefined{russian}
+Luqqk/go-cli-chat: Chat server and command line interface client (CLI) written
+  in Go. [Электронный ресурс].
+\newblock Режим доступа: \url{https://github.com/Luqqk/go-cli-chat}
+  (дата обращения: 24.12.2021).
+
+\bibitem{crio}
+\selectlanguageifdefined{russian}
+Crio Projects - CLI Based Chat Tool | Crio.Do | Project-Based Learning Platform
+  for Developers [Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://www.crio.do/projects/python-cli-chat/} (дата
+  обращения: 24.12.2021).
+
+\bibitem{chattt}
+\selectlanguageifdefined{russian}
+Introducing Chattt - an open source CLI chat client — Steemit
+  [Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://steemit.com/utopian-io/@the-dragon/introducing-chattt-an-open-source-cli-chat-client}
+  (дата обращения: 24.12.2021).
+
+\bibitem{golang}
+\selectlanguageifdefined{russian}
+The Go Programming Language [Электронный ресурс].
+\newblock Режим доступа: \url{https://golang.org/} (дата
+  обращения: 24.12.2021).
+
+\bibitem{gocui}
+\selectlanguageifdefined{russian}
+jroimartin/gocui: Minimalist Go package aimed at creating Console User
+  Interfaces. [Электронный ресурс].
+\newblock Режим доступа: \url{https://github.com/jroimartin/gocui}
+  (дата обращения: 24.12.2021).
+
+\bibitem{redis}
+\selectlanguageifdefined{russian}
+Redis [Электронный ресурс].
+\newblock Режим доступа: \url{https://redis.io/} (дата
+  обращения: 24.12.2021).
+
+\bibitem{redispubsub}
+\selectlanguageifdefined{russian}
+Pub/Sub - Redis [Электронный ресурс].
+\newblock Режим доступа: \url{https://redis.io/topics/pubsub}
+  (дата обращения: 24.12.2021).
+
+\end{thebibliography}
